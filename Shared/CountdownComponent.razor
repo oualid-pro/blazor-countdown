@@ -1,0 +1,23 @@
+@using Countdown.Data;
+@using System.Threading;
+
+@inject CountdownService CountdownService
+
+<div>
+    <strong>Timer: <span class="@CountdownLabel">@CountdownService.Current</span></strong>
+</div>
+
+@code {
+    private string CountdownLabel => CountdownService.Current >= 0 ? "text-success" : "text-danger";
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        CountdownService.Handler = this.OnElapsed;
+    }
+
+    public void OnElapsed()
+    {
+        CountdownService.Decrement();
+        InvokeAsync(() => StateHasChanged());
+    }
+}
